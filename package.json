@@ -1,5 +1,5 @@
 {
-  "name": "browser-image-upscaler",
+  "name": "enhance-upscaler",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,12 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@xenova/transformers": "^2.15.1",
+    "@tensorflow/tfjs": "~4.11.0",
+    "@upscalerjs/default-model": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-medium": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-slim": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-thick": "^1.0.0-beta.12",
+    "@upscalerjs/maxim-deblurring": "^0.1.0",
+    "@upscalerjs/maxim-dehazing-indoor": "^0.1.0",
+    "@upscalerjs/maxim-denoising": "^0.1.0",
+    "@upscalerjs/maxim-deraining": "^0.1.0",
+    "@upscalerjs/maxim-enhancement": "^0.1.0",
+    "@upscalerjs/maxim-retouching": "^0.1.0",
     "lucide-react": "^0.344.0",
-    "onnxruntime-web": "^1.17.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-dropzone": "^14.2.3"
+    "upscaler": "^1.0.0-beta.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
