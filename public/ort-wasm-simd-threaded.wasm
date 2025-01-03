@@ -1,0 +1,1 @@
+<command>curl -o public/ort-wasm-simd-threaded.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort-wasm-simd-threaded.wasm</command>

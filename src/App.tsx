@@ -1,135 +1,89 @@
-import React, { useState, useCallback } from 'react';
-import { Wand2 } from 'lucide-react';
-import { ImageDropzone } from './components/ImageDropzone';
+import React, { useState } from 'react';
+import { Maximize } from 'lucide-react';
+import { Dropzone } from './components/Dropzone';
 import { ModelSelector } from './components/ModelSelector';
 import { ImagePreview } from './components/ImagePreview';
-import { MODEL_TYPES } from './constants';
-import { upscaleImage } from './utils/upscaler';
-import type { ImageState, SelectedModel } from './types';
+import { getModel } from './lib/models/registry';
+import { fileToImageData, imageDataToBlob } from './lib/image-utils';
 
 function App() {
-  const [selectedModel, setSelectedModel] = useState<SelectedModel>({
-    type: MODEL_TYPES[0].name,
-    scale: MODEL_TYPES[0].scales[0]
-  });
-  const [imageState, setImageState] = useState<ImageState>({
-    original: null,
-    upscaled: null,
-    processing: false,
-    error: null,
-  });
+  const [selectedModel, setSelectedModel] = useState('swin-ir');
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [upscaledImage, setUpscaledImage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleImageSelect = useCallback(async (file: File) => {
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImageState((prev) => ({
-        ...prev,
-        original: e.target?.result as string,
-        upscaled: null,
-        error: null,
-      }));
-    };
-    reader.onerror = () => {
-      setImageState((prev) => ({
-        ...prev,
-        error: 'Failed to load image. Please try again.',
-      }));
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
-  const handleUpscale = useCallback(async () => {
-    if (!imageState.original) return;
-
-    setImageState((prev) => ({ ...prev, processing: true, error: null }));
+  const handleImageDrop = async (file: File) => {
+    setIsProcessing(true);
+    setUpscaledImage(null);
+    setError(null);
+    
+    // Create object URL for preview
+    const objectUrl = URL.createObjectURL(file);
+    setOriginalImage(objectUrl);
 
     try {
-      const upscaledUrl = await upscaleImage(imageState.original, selectedModel);
+      // Get selected model
+      const model = await getModel(selectedModel);
+      await model.load();
+
+      // Process image
+      const imageData = await fileToImageData(file);
+      const upscaledData = await model.upscale(imageData);
+      const upscaledBlob = await imageDataToBlob(upscaledData);
       
-      setImageState((prev) => ({
-        ...prev,
-        upscaled: upscaledUrl,
-        processing: false,
-      }));
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      console.error('Upscale error:', errorMessage);
-      setImageState((prev) => ({
-        ...prev,
-        processing: false,
-        error: errorMessage,
-      }));
+      setUpscaledImage(URL.createObjectURL(upscaledBlob));
+    } catch (err) {
+      console.error('Error processing image:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred while processing the image');
+    } finally {
+      setIsProcessing(false);
     }
-  }, [imageState.original, selectedModel]);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Wand2 className="w-12 h-12 text-blue-500" />
-            <h1 className="text-4xl font-bold text-gray-900">Enhance</h1>
+            <Maximize className="h-12 w-12 text-blue-500" />
+            <h1 className="text-4xl font-bold">Upscale Images</h1>
           </div>
           <p className="text-xl text-gray-600">
-            Upscale and enhance your images with AI
+            Enhance and upscale your images using AI - right in your browser
           </p>
         </div>
 
+        {/* Main Content */}
         <div className="space-y-8">
-          {!imageState.original ? (
-            <ImageDropzone
-              onImageSelect={handleImageSelect}
-              disabled={imageState.processing}
+          {/* Model Selection */}
+          <div className="bg-white p-6 rounded-xl shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Choose Upscaling Model</h2>
+            <ModelSelector 
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
             />
-          ) : (
-            <div className="space-y-8">
-              <ImagePreview
-                original={imageState.original}
-                upscaled={imageState.upscaled}
-                processing={imageState.processing}
+          </div>
+
+          {/* Image Upload */}
+          <div className="bg-white p-6 rounded-xl shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+            <Dropzone onImageDrop={handleImageDrop} />
+            {error && (
+              <p className="mt-4 text-red-500">{error}</p>
+            )}
+          </div>
+
+          {/* Preview */}
+          {originalImage && (
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Preview</h2>
+              <ImagePreview 
+                original={originalImage}
+                upscaled={upscaledImage}
+                isProcessing={isProcessing}
               />
-              
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-center text-gray-800">
-                  Select Enhancement Model
-                </h2>
-                <ModelSelector
-                  modelTypes={MODEL_TYPES}
-                  selectedModel={selectedModel}
-                  onSelectModel={setSelectedModel}
-                  disabled={imageState.processing}
-                />
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={handleUpscale}
-                  disabled={imageState.processing}
-                  className={`px-6 py-3 rounded-lg bg-blue-500 text-white font-medium flex items-center gap-2 transition-colors ${
-                    imageState.processing
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-blue-600'
-                  }`}
-                >
-                  {imageState.processing ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="w-5 h-5" />
-                      Enhance Image
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {imageState.error && (
-                <p className="text-center text-red-500">{imageState.error}</p>
-              )}
             </div>
           )}
         </div>

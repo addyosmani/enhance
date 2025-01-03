@@ -1,0 +1,1 @@
+<command>curl -o public/ort-wasm.wasm https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort-wasm.wasm</command>
