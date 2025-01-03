@@ -32,13 +32,6 @@ export function ImagePreview({ original, upscaled, processing, onResize }: Image
     <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="space-y-4">
         <h3 className="font-medium text-gray-700">Original</h3>
-        {originalImage && (
-          <ImageResizer
-            originalWidth={originalImage.naturalWidth}
-            originalHeight={originalImage.naturalHeight}
-            onResize={handleResize}
-          />
-        )}
         <div className="relative bg-gray-100 rounded-lg flex items-center justify-center p-4 min-h-[320px]">
           <img
             src={displayedImage}
@@ -47,6 +40,13 @@ export function ImagePreview({ original, upscaled, processing, onResize }: Image
             style={{ objectFit: 'contain' }}
           />
         </div>
+        {originalImage && (
+          <ImageResizer
+            originalWidth={originalImage.naturalWidth}
+            originalHeight={originalImage.naturalHeight}
+            onResize={handleResize}
+          />
+        )}
       </div>
       <div className="space-y-2">
         <h3 className="font-medium text-gray-700">Enhanced</h3>

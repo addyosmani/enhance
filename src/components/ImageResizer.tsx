@@ -50,7 +50,7 @@ export function ImageResizer({ originalWidth, originalHeight, onResize }: ImageR
   return (
     <div className="space-y-3 bg-white p-4 rounded-lg shadow-sm">
       <div className="flex items-center gap-2">
-        <label className="text-sm font-medium text-gray-700">Scale</label>
+        <label className="text-sm font-medium text-gray-700">Resize</label>
         <input
           type="range"
           min="1"
@@ -97,6 +97,8 @@ export function ImageResizer({ originalWidth, originalHeight, onResize }: ImageR
           />
         </div>
       </div>
+      <div className="block text-sm">Resizing images to be smaller may be needed for MAXIM models</div>
+
     </div>
   );
 }
