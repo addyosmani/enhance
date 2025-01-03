@@ -1,6 +1,6 @@
 # Enhance
 
-![Enhance Logo](https://raw.githubusercontent.com/addyosmani/enhance/main/public/enhance-logo.png)
+![meta](https://github.com/user-attachments/assets/5b950f80-3d5e-449f-97ff-09804603566d)
 
 Enhance is an AI-powered image enhancement tool that lets you upscale and improve image quality directly in your browser. Try it out at [enhance.addy.ie](https://enhance.addy.ie)
 
