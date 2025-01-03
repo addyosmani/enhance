@@ -1,0 +1,45 @@
+{
+  "name": "enhance-upscaler",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "~4.11.0",
+    "@upscalerjs/default-model": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-medium": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-slim": "^1.0.0-beta.12",
+    "@upscalerjs/esrgan-thick": "^1.0.0-beta.12",
+    "@upscalerjs/maxim-deblurring": "^0.1.0",
+    "@upscalerjs/maxim-dehazing-indoor": "^0.1.0",
+    "@upscalerjs/maxim-denoising": "^0.1.0",
+    "@upscalerjs/maxim-deraining": "^0.1.0",
+    "@upscalerjs/maxim-enhancement": "^0.1.0",
+    "@upscalerjs/maxim-retouching": "^0.1.0",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "upscaler": "^1.0.0-beta.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0",
+    "vite": "^5.4.2"
+  }
+}
